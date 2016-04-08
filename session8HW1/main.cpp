@@ -47,6 +47,10 @@ int main() {
 	list.push(lNum2);
 	list.push(lNum3);
 	list.push(lNum4);
+	std::cout << "before swap:  ";
+	list.print();
+	list.swap(5, 20);
+	std::cout << "after swap:  ";
 	list.print();
 
 

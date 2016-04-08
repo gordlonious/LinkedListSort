@@ -45,6 +45,7 @@ void linkedListSort<elemType>::push(elemType& item) {
 	}
 	else if (length >= 1 && length < maxSize) {
 		lastNode->link = new nodeT<elemType>(item);
+		lastNode = lastNode->link;
 	}
 	else {
 		std::cerr << "push() length not correct or list is full" << std::endl;
@@ -76,6 +77,7 @@ void linkedListSort<elemType>::print() {
 	else if (length > 1) {
 		while (temp != NULL) {
 			std::cout << *(temp->info);
+			std::cout << " ";
 			temp = temp->link; // advance through list by 1
 		}
 	}
@@ -92,8 +94,10 @@ void linkedListSort<elemType>::linearSearch(elemType item, nodeT<elemType>& node
 	while (temp != NULL) {
 		if (*(temp->info) == item) {
 			nodeT<elemType> *itemNode = new nodeT<elemType>(*temp, true);
-			if (itemNode != NULL)
+			if (itemNode != NULL) {
 				node = *itemNode;
+				break;
+			}
 			else
 				std::cerr << "linearSearch itemNode was null" << std::endl;
 			temp = temp->link;
@@ -104,14 +108,22 @@ void linkedListSort<elemType>::linearSearch(elemType item, nodeT<elemType>& node
 	}
 }
 
-// swap was hard as linked list -- SAVE CODE!!! -- gLibrary
 // swap integer values
 template<>
 void linkedListSort<int>::swap(int item1, int item2) {
 	if (ListType == linkedListType::integerType) {
-		nodeT<int> *temp = beginningNode; // not sure if casting works here? be safe and pass enum-taped-type
-		nodeT<int> *lItem1 = new nodeT<int>();
-		//linearSearch(item1, &*lItem1);
+		nodeT<int> *temp = beginningNode;
+
+		// search for reach node integer value
+		nodeT<int> lItem1;
+		linearSearch(item1, lItem1);
+		nodeT<int> lItem2;
+		linearSearch(item2, lItem2);
+
+		// swap each node info value
+		int tempInfo = *(lItem1.info);
+		*(lItem1.info) = *(lItem2.info);
+		*(lItem2.info) = tempInfo;
 	}
 	else {
 		std::cerr << "swap() detected incorrect type" << std::endl;
