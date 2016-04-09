@@ -53,6 +53,43 @@ int main() {
 	std::cout << "after swap:  ";
 	list.print();
 
+	// selection sort
+	std::cout << std::endl;
+	std::cout << "selection sort" << std::endl;
+	list.print();
+	list.selectionSort();
+	list.print();
+
+	// selection sort 2
+	linkedListSort<int> list2 = linkedListSort<int>(10, linkedListType::integerType);
+	int l2Num1 = 5;
+	int l2Num2 = 100;
+	int l2Num3 = 13;
+	int l2Num4 = 17;
+	int l2Num5 = 25;
+	int l2Num6 = 59;
+	int l2Num7 = 78;
+	int l2Num8 = 56;
+	int l2Num9 = 117;
+	int l2Num10 = 7; // must be a parameter type that allows for direct integer passing ?
+	list2.push(l2Num1);
+	list2.push(l2Num2);
+	list2.push(l2Num3);
+	list2.push(l2Num4);
+	list2.push(l2Num5);
+	list2.push(l2Num6);
+	list2.push(l2Num7);
+	list2.push(l2Num8);
+	list2.push(l2Num9);
+	list2.push(l2Num10);
+	std::cout << std::endl;
+	std::cout << "selections sort 2" << std::endl;
+	list2.print();
+	list2.selectionSort();
+	list2.print();
+
+
+
 
 	char stop;
 	std::cin >> stop;

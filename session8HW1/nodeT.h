@@ -8,6 +8,7 @@ public:
 	nodeT(elemType& info);
 	nodeT(elemType& info, nodeT<elemType>* link);
 	nodeT(nodeT<elemType>& node, bool assignLink = true);
+	//nodeT<elemType> operator=(nodeT<elemType>&);
 
 	// converts the node to an integer node if and only if its info member is of integer type
 	// link is set to NULL
@@ -47,6 +48,13 @@ nodeT<elemType>::nodeT(nodeT<elemType>& node, bool assignLink) {
 	if (assignLink)
 		link = node.link;
 }
+
+//template<class elemType>
+//nodeT<elemType> nodeT<elemType>::operator=(nodeT<elemType>& node) {  // return constructor call??
+//	nodeT<elemType> *ptrN = &node;  // why is this pointer needed to compille??
+//	nodeT<elemType> nNode = nodeT<elemType>(*ptrN, ptrN->link);
+//	return nNode;
+//}
 
 //template<class elemType>
 //bool nodeT<elemType>::convertToIntegerNode(nodeT<int>& node) {
