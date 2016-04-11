@@ -80,7 +80,7 @@ void linkedListSort<int>::push(int* item) {
 		beginningNode = lastNode; //  update beginning pointer
 	}
 	else if (length >= 1 && length < maxSize) {
-		lastNode->link = new nodeT<int>(*(nodeT<int>::nodeIntegerConstructor(*item)));
+		lastNode->link = new nodeT<int>(*item);
 		lastNode = lastNode->link;
 	}
 	else {
