@@ -12,10 +12,13 @@ public:
 
 	void push(elemType& item);
 	void push(nodeT<elemType>& node);
+	void push(int*);
+	//void push(const int&& item); // push hard-coded integer
 
 	void swap(int, int);  // swaps two integer values (only for linkedListSort<int>)
 	void swapAt(int, int, bool);  //  swap at index
 	void  linearSearch(elemType, nodeT<elemType>&);
+	void  linearSearchJoke(const int, nodeT<int>&); // how do i get rid of this -- solving incorrect constructors from being called
 
 	void selectionSort();
 	void insertionSort();
@@ -69,6 +72,40 @@ void linkedListSort<elemType>::push(elemType& item) {
 	length++;
 }
 
+
+template<>
+void linkedListSort<int>::push(int* item) {
+	if (length == 0) {
+		*(lastNode->info) = *item; // copy item info
+		beginningNode = lastNode; //  update beginning pointer
+	}
+	else if (length >= 1 && length < maxSize) {
+		lastNode->link = new nodeT<int>(*(nodeT<int>::nodeIntegerConstructor(*item)));
+		lastNode = lastNode->link;
+	}
+	else {
+		std::cerr << "push() length not correct or list is full" << std::endl;
+	}
+	length++;
+}
+
+// hmm
+//template<>
+//void linkedListSort<int>::push(const int && item) {
+//	if (length == 0) {  // first item case
+//		*(lastNode->info) = item; // copy item info
+//		beginningNode = lastNode; //  update beginning pointer
+//	}
+//	else if (length >= 1 && length < maxSize) {
+//		lastNode->link = nodeT<int>::nodeIntegerConstructor(item);
+//		lastNode = lastNode->link;
+//	}
+//	else {
+//		std::cerr << "push() length not correct or list is full" << std::endl;
+//	}
+//	length++;
+//}
+
 template<class elemType>
 void linkedListSort<elemType>::push(nodeT<elemType>& node) {
 	if (length == 0) {
@@ -103,6 +140,27 @@ void linkedListSort<elemType>::print() {
 	std::cout << std::endl;
 }
 
+template<>
+void linkedListSort<int>::linearSearchJoke(int item, nodeT<int>& node) {
+	nodeT<int> *temp = beginningNode;
+	nodeT<int> *itemNode = NULL;
+	while (temp != NULL) {
+		if (*(temp->info) == item) {
+			nodeT<int> *itemNode = new nodeT<int>(*temp, true);
+			if (itemNode != NULL) {
+				node = *itemNode;
+				break;
+			}
+			else
+				std::cerr << "linearSearch itemNode was null" << std::endl;
+			temp = temp->link;
+		}
+		else {
+			temp = temp->link;
+		}
+	}
+}
+
 template<class elemType>
 void linkedListSort<elemType>::linearSearch(elemType item, nodeT<elemType>& node) {
 	nodeT<elemType> *temp = beginningNode;
@@ -126,15 +184,15 @@ void linkedListSort<elemType>::linearSearch(elemType item, nodeT<elemType>& node
 
 // 2n
 // swap integer values
-template<class elemType>
-void linkedListSort<elemType>::swap(int item1, int item2) {
+template<>
+void linkedListSort<int>::swap(int item1, int item2) {
 	nodeT<int> *temp = beginningNode;
 
 	// search for reach node integer value
-	nodeT<elemType> lItem1;
-	linearSearch(item1, lItem1);
-	nodeT<elemType> lItem2;
-	linearSearch(item2, lItem2);
+	nodeT<int> lItem1;
+	linearSearchJoke(item1, lItem1);
+	nodeT<int> lItem2;
+	linearSearchJoke(item2, lItem2);
 
 	// swap each node info value
 	int tempInfo = *(lItem1.info);
@@ -220,7 +278,7 @@ void linkedListSort<int>::traverseSorted(nodeT<int>& nodeToInsert) {
 				nodeT<int> *tCopy2 = new nodeT<int>(*beginningNode->link);
 				nodeT<int> *moveNodeTemp = beginningNode;
 				while (moveNodeTemp != NULL) {
-					moveNodeTemp->link = tCopy;
+					moveNodeTemp->link = nodeT<int>::sIntCopyArg(*tCopy);
 					tCopy = moveNodeTemp;
 				}
 			}

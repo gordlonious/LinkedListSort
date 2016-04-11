@@ -8,13 +8,16 @@ public:
 	nodeT(elemType& info);
 	nodeT(elemType& info, nodeT<elemType>* link);
 	nodeT(nodeT<elemType>& node, bool assignLink = true);
+	nodeT(int&&);
+	static nodeT<int>* nodeIntegerConstructor(int);
+	static nodeT<elemType>* sCopyArg(nodeT<elemType>&);
+	static nodeT<int>* sIntCopyArg(nodeT<int>&);
 	//nodeT<elemType> operator=(nodeT<elemType>&);
 
 	// converts the node to an integer node if and only if its info member is of integer type
 	// link is set to NULL
 	// true is returned if info is an integer
 	// false is returned if info is else
-	// 
 	//bool convertToIntegerNode(nodeT<int>&);
 
 	//nodeT<elemType> copyIntNode(nodeT<elemType>*, bool assignLink); // integer node copy constructor ( see error )??
@@ -44,14 +47,36 @@ nodeT<elemType>::nodeT(elemType& infoItem, nodeT<elemType>* linkItem) {
 
 template<class elemType>
 nodeT<elemType>::nodeT(nodeT<elemType>& node, bool assignLink) {
-	info = node.info;
+	info = new int();
+	*info = *(node.info);
 	if (assignLink)
 		link = node.link;
 }
 
+template<class elemType>
+static nodeT<elemType>* sCopyNode(nodeT<elemType>& node) {
+	return new nodeT<elemType>(node);
+}
+
+template<>
+nodeT<int>::nodeT(int && item) {  // not helpful -- create customConstructor
+	*info = item;
+	link = NULL;
+}
+
+template<>
+static nodeT<int>* nodeT<int>::sIntCopyArg(nodeT<int>& node) {  // why did i need to make this? -- proof would be good
+	return new nodeT<int>(node);
+}
+
+template<>
+static nodeT<int>* nodeT<int>::nodeIntegerConstructor(int item) {
+	return new nodeT<int>(item);
+}
+
 //template<class elemType>
 //nodeT<elemType> nodeT<elemType>::operator=(nodeT<elemType>& node) {  // return constructor call??
-//	nodeT<elemType> *ptrN = &node;  // why is this pointer needed to compille??
+//	nodeT<elemType> *ptrN = &node;  // why is this pointer needed to compile??
 //	nodeT<elemType> nNode = nodeT<elemType>(*ptrN, ptrN->link);
 //	return nNode;
 //}

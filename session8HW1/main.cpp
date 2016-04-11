@@ -3,7 +3,7 @@
 int main() {
 	nodeT<int> node = nodeT<int>();
 
-	int أخرجه= 6;
+	int أخرجه = 6;
 	nodeT<int> node1 = nodeT<int>(أخرجه);
 
 	int test = 5;
@@ -27,9 +27,9 @@ int main() {
 	testList.push(testItem1);
 	nodeT<int>* testNode1 = new nodeT<int>();
 	testList.linearSearch(10, *testNode1);
-	std::cout << std::endl  << "Test linear Search:  " << *(testNode1->info) << std::endl;
+	std::cout << std::endl << "Test linear Search:  " << *(testNode1->info) << std::endl;
 
-	 //test add
+	//test add
 	std::cout << std::endl;
 	std::cout << "linkedListSort" << std::endl;
 	linkedListSort<int> list = linkedListSort<int>(10, linkedListType::integerType);
@@ -39,14 +39,10 @@ int main() {
 	list.push(lType);
 
 	// add random numbers / test swap
-	int lNum1 = 5;
-	int lNum2 = 11;
-	int lNum3 = 16;
-	int lNum4 = 20;
-	list.push(lNum1);
-	list.push(lNum2);
-	list.push(lNum3);
-	list.push(lNum4);
+	list.push(new int(5));
+	list.push(new int(11));
+	list.push(new int(16));
+	list.push(new int(20));
 	std::cout << "before swap:  ";
 	list.print();
 	list.swap(5, 20);
@@ -62,31 +58,31 @@ int main() {
 
 	// selection sort 2
 	linkedListSort<int> list2 = linkedListSort<int>(10, linkedListType::integerType);
-	int l2Num1 = 5;
-	int l2Num2 = 100;
-	int l2Num3 = 13;
-	int l2Num4 = 17;
-	int l2Num5 = 25;
-	int l2Num6 = 59;
-	int l2Num7 = 78;
-	int l2Num8 = 56;
-	int l2Num9 = 117;
-	int l2Num10 = 7; // must be a parameter type that allows for direct integer passing ?
-	list2.push(l2Num1);
-	list2.push(l2Num2);
-	list2.push(l2Num3);
-	list2.push(l2Num4);
-	list2.push(l2Num5);
-	list2.push(l2Num6);
-	list2.push(l2Num7);
-	list2.push(l2Num8);
-	list2.push(l2Num9);
-	list2.push(l2Num10);
+	list2.push(new int(5));
+	list2.push(new int(100));
+	list2.push(new int(13));
+	list2.push(new int(17));
+	list2.push(new int(25));
+	list2.push(new int(59));
+	list2.push(new int(78));
+	list2.push(new int(56));
+	list2.push(new int(117));
+	list2.push(new int(7));
 	std::cout << std::endl;
 	std::cout << "selections sort 2" << std::endl;
 	list2.print();
 	list2.selectionSort();
 	list2.print();
+
+	// insertion sort
+	linkedListSort<int> list3 = linkedListSort<int>(6, linkedListType::integerType);
+	list3.push(new int(10));
+	list3.push(new int(80));
+	list3.push(new int(105));
+	list3.push(new int(124));
+	list3.push(new int(90));
+	list3.push(new int(91));
+	list3.insertionSort();
 
 
 
