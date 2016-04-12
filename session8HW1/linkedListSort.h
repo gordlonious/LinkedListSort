@@ -21,7 +21,7 @@ public:
 	void  linearSearchJoke(const int, nodeT<int>&); // how do i get rid of this -- solving incorrect constructors from being called
 
 	void selectionSort();
-	void insertionSort();
+	void linkedInsertionSort();
 
 
 	// places item in the correct place of the linked list
@@ -39,12 +39,7 @@ private:
 	int minIntValue(int, int);
 
 	// breakdown of insertion sort
-	void traverseSorted(nodeT<int>&);
-
 	// case 1: find item greater than and item less than ( insert in between )
-	bool insertionCase1(nodeT<int>&, nodeT<int>&, nodeT<int>&);
-
-	void insertionSearch(int);
 };
 
 template<class elemType>
@@ -245,56 +240,88 @@ int linkedListSort<int>::minIntValue(int first, int last) {
 	return minItem;
 }
 
-template<>
-bool linkedListSort<int>::insertionCase1(nodeT<int>& cur, nodeT<int>& trail, nodeT<int>& addCur) {
-
-	return true;
-}
-
-// O(n)
-template<>
-void linkedListSort<int>::traverseSorted(nodeT<int>& nodeToInsert) {
-	nodeT<int> *current = beginningNode->link;  // use enumerator to compare two items
-	nodeT<int> *trailCurrent = beginningNode;
-	nodeT<int> *addCurrent = beginningNode->link->link;
-
-	// case -1: current does not exist ( list has 1 item )
-	// case 0:  2 items. add current does not exist ( current is less than first item )
-	// case 1: find item greater than and item less than ( insert in between ) ( two closest items ) ( sorted portion )
-	// case 2: find item equal to and item greater than or less than ( insert )
-	// case 3: else ( output error )
-	while (current != NULL) {
-		if (current == NULL) { // unnecessary?
-			break;
-		}
-		else if (*(current->info) < *(trailCurrent->info)) {
-			swap(*(current->info), *(trailCurrent->info));
-		}
-		else if (insertionCase1(nodeT<int>(*current), nodeT<int>(*trailCurrent), nodeT<int>(*addCurrent))) { // copy pointers and return case 1
-			// move everything down except less than
-			// insert
-			for (int i = 0; i < length; i++) {
-				nodeT<int> *tCopy = new nodeT<int>(*beginningNode);
-				nodeT<int> *tCopy2 = new nodeT<int>(*beginningNode->link);
-				nodeT<int> *moveNodeTemp = beginningNode;
-				while (moveNodeTemp != NULL) {
-					moveNodeTemp->link = nodeT<int>::sIntCopyArg(*tCopy);
-					tCopy = moveNodeTemp;
+template<class elemType>
+void linkedListSort<elemType>::linkedInsertionSort()
+{
+	nodeT<elemType> *first = beginningNode;
+	nodeT<elemType> *lastInOrder;
+	nodeT<elemType> *firstOutOfOrder;
+	nodeT<elemType> *current;
+	nodeT<elemType> *trailCurrent;
+	lastInOrder = first;
+	if (first == NULL)
+		std::cerr << "Cannot sort an empty list." << std::endl;
+	else if (first->link == NULL)
+		std::cout << "The list is of length 1. "
+		<< "It is already in order." << std::endl;
+	else
+		while (lastInOrder->link != NULL)
+		{
+			firstOutOfOrder = lastInOrder->link;
+			if (*(firstOutOfOrder->info) < *(first->info))
+			{
+				lastInOrder->link = firstOutOfOrder->link;
+				firstOutOfOrder->link = first;
+				first = firstOutOfOrder;
+			}
+			else
+			{
+				trailCurrent = first;
+				current = first->link;
+				while (*(current->info) < *(firstOutOfOrder->info))
+				{
+					trailCurrent = current;
+					current = current->link;
 				}
+				if (current != firstOutOfOrder)
+				{
+					lastInOrder->link = firstOutOfOrder->link;
+					firstOutOfOrder->link = current;
+					trailCurrent->link = firstOutOfOrder;
+				}
+				else
+					lastInOrder = lastInOrder->link;
 			}
 		}
-	}
 }
+
+// O(n)
+//template<>
+//void linkedListSort<int>::traverseSorted(nodeT<int>& nodeToInsert) {
+//	nodeT<int> *current = beginningNode->link;  // use enumerator to compare two items
+//	nodeT<int> *trailCurrent = beginningNode;
+//	nodeT<int> *addCurrent = beginningNode->link->link;
+//
+//	// case -1: current does not exist ( list has 1 item )
+//	// case 0:  2 items. add current does not exist ( current is less than first item )
+//	// case 1: find item greater than and item less than ( insert in between ) ( two closest items ) ( sorted portion )
+//	// case 2: find item equal to and item greater than or less than ( insert )
+//	// case 3: else ( output error )
+//	while (current != NULL) {
+//		if (current == NULL) { // unnecessary?
+//			break;
+//		}
+//		else if (*(current->info) < *(trailCurrent->info)) {
+//			swap(*(current->info), *(trailCurrent->info));
+//		}
+//		else if (insertionCase1(nodeT<int>(*current), nodeT<int>(*trailCurrent), nodeT<int>(*addCurrent))) { // copy pointers and return case 1
+//			// insert ( no indexes ) new node -- hmm
+//			// find <=
+//			nodeT<int> left;
+//			//linearSearch(left);
+//		}
+//	}
+//}
 
 
 // O(n)
-template<>
-void linkedListSort<int>::insertionSort() {
-	nodeT<int> *firstOutOfOrder = beginningNode->link;
-	nodeT<int> *sortedTraversal = beginningNode;  // initialize node that traverses sorted portion of the list
-	for (int i = 0; i < length; i++) {
-		traverseSorted(*firstOutOfOrder);
-	}
-}
+//template<>
+//void linkedListSort<int>::insertionSort() {
+//	nodeT<int> *firstOutOfOrder = beginningNode->link;
+//	nodeT<int> *sortedTraversal = beginningNode;  // initialize node that traverses sorted portion of the list
+//	for (int i = 0; i < length; i++) {
+//		traverseSorted(*firstOutOfOrder);
+//	}
+//}
 
 #endif

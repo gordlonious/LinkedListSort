@@ -82,8 +82,12 @@ int main() {
 	list3.push(new int(124));
 	list3.push(new int(90));
 	list3.push(new int(91));
-	list3.insertionSort();
-
+	std::cout << std::endl;
+	std::cout << "insertion sort before:  ";
+	list3.print();
+	list3.linkedInsertionSort();
+	std::cout << "insertion sort after:  ";
+	list3.print();
 
 
 
