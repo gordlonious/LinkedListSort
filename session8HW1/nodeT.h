@@ -29,7 +29,7 @@ public:
 
 template<class elemType>
 nodeT<elemType>::nodeT() {
-	info = NULL;
+	info = new elemType();
 	link = NULL;
 }
 
