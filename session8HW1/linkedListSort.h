@@ -16,12 +16,20 @@ public:
 	//void push(const int&& item); // push hard-coded integer
 
 	void swap(int, int);  // swaps two integer values (only for linkedListSort<int>)
-	void swapAt(int, int, bool);  //  swap at index
+	void swapAt(int, int);  //  swap at index
 	void  linearSearch(elemType, nodeT<elemType>&);
-	void  linearSearchJoke(const int, nodeT<int>&); // how do i get rid of this -- solving incorrect constructors from being called
+	void  linearSearchJoke(const int, nodeT<int>*&); // how do i get rid of this -- solving incorrect constructors from being called
 
 	void selectionSort();
 	void linkedInsertionSort();
+	void quickSort();
+	nodeT<elemType>* mergeList(nodeT<elemType>*, nodeT<elemType>*);
+	void divideList(nodeT<elemType>*, nodeT<elemType>* &node);
+	void recMergeSort(nodeT<elemType>* &head);
+	void mergeSort();
+	int partition(int, int);
+	void recQuickSort(int first, int last);
+
 
 
 	// places item in the correct place of the linked list
@@ -38,8 +46,6 @@ private:
 	int minLocation(int, int);
 	int minIntValue(int, int);
 
-	// breakdown of insertion sort
-	// case 1: find item greater than and item less than ( insert in between )
 };
 
 template<class elemType>
@@ -136,19 +142,12 @@ void linkedListSort<elemType>::print() {
 }
 
 template<>
-void linkedListSort<int>::linearSearchJoke(int item, nodeT<int>& node) {
+void linkedListSort<int>::linearSearchJoke(int item, nodeT<int>*& node) {
 	nodeT<int> *temp = beginningNode;
-	nodeT<int> *itemNode = NULL;
 	while (temp != NULL) {
 		if (*(temp->info) == item) {
-			nodeT<int> *itemNode = new nodeT<int>(*temp, true);
-			if (itemNode != NULL) {
-				node = *itemNode;
-				break;
-			}
-			else
-				std::cerr << "linearSearch itemNode was null" << std::endl;
-			temp = temp->link;
+			node = temp; // ref shouldn't be destroyed after function call..
+			break;
 		}
 		else {
 			temp = temp->link;
@@ -184,15 +183,42 @@ void linkedListSort<int>::swap(int item1, int item2) {
 	nodeT<int> *temp = beginningNode;
 
 	// search for reach node integer value
-	nodeT<int> lItem1;
+	nodeT<int> *lItem1 = NULL;
 	linearSearchJoke(item1, lItem1);
-	nodeT<int> lItem2;
+	nodeT<int> *lItem2 = NULL;
 	linearSearchJoke(item2, lItem2);
 
 	// swap each node info value
-	int tempInfo = *(lItem1.info);
-	*(lItem1.info) = *(lItem2.info);
-	*(lItem2.info) = tempInfo;
+	if (lItem1 != NULL && lItem2 != NULL) {
+		int tempInfo = *(lItem1->info);
+		*(lItem1->info) = *(lItem2->info);
+		*(lItem2->info) = tempInfo;
+	}
+	else {
+		std::cerr << "swap() failed -- items not found" << std::endl;
+	}
+}
+
+template<class elemType>
+void linkedListSort<elemType>::swapAt(int first, int last) {
+
+	nodeT<elemType> *firstN = beginningNode;
+	for (int i = first; i > 0; i--) // go to first node
+		firstN = firstN->link;
+
+	nodeT<elemType> *lastN = beginningNode;
+	for (int i = last; i > 0; i--)
+		lastN = lastN->link;
+
+	if (firstN != NULL && lastN != NULL) {
+		elemType temp;
+		temp = *(firstN->info);
+		*(firstN->info) = *(lastN->info);
+		*(lastN->info) = temp;
+	}
+	else {
+		std::cerr << "swap() first or last nodes were not found " << std::endl;
+	}
 }
 
 template<class elemType>
@@ -285,43 +311,159 @@ void linkedListSort<elemType>::linkedInsertionSort()
 		}
 }
 
-// O(n)
-//template<>
-//void linkedListSort<int>::traverseSorted(nodeT<int>& nodeToInsert) {
-//	nodeT<int> *current = beginningNode->link;  // use enumerator to compare two items
-//	nodeT<int> *trailCurrent = beginningNode;
-//	nodeT<int> *addCurrent = beginningNode->link->link;
-//
-//	// case -1: current does not exist ( list has 1 item )
-//	// case 0:  2 items. add current does not exist ( current is less than first item )
-//	// case 1: find item greater than and item less than ( insert in between ) ( two closest items ) ( sorted portion )
-//	// case 2: find item equal to and item greater than or less than ( insert )
-//	// case 3: else ( output error )
-//	while (current != NULL) {
-//		if (current == NULL) { // unnecessary?
-//			break;
-//		}
-//		else if (*(current->info) < *(trailCurrent->info)) {
-//			swap(*(current->info), *(trailCurrent->info));
-//		}
-//		else if (insertionCase1(nodeT<int>(*current), nodeT<int>(*trailCurrent), nodeT<int>(*addCurrent))) { // copy pointers and return case 1
-//			// insert ( no indexes ) new node -- hmm
-//			// find <=
-//			nodeT<int> left;
-//			//linearSearch(left);
-//		}
-//	}
-//}
+template<class elemType>
+int linkedListSort<elemType>::partition(int first, int last) {
+	elemType pivot;
+	int index, smallIndex;
+	swapAt(first, (first + last) / 2);
 
+	nodeT<elemType> *ptrPiv = beginningNode;
+	for (int i = first; i > 0; i--)
+		ptrPiv = ptrPiv->link;
 
-// O(n)
-//template<>
-//void linkedListSort<int>::insertionSort() {
-//	nodeT<int> *firstOutOfOrder = beginningNode->link;
-//	nodeT<int> *sortedTraversal = beginningNode;  // initialize node that traverses sorted portion of the list
-//	for (int i = 0; i < length; i++) {
-//		traverseSorted(*firstOutOfOrder);
-//	}
-//}
+	pivot = *(ptrPiv->info);
+	smallIndex = first;
+	smallIndex = 0;
+	nodeT<elemType> *temp = beginningNode->link; // start one after pivot
+	for (index = first + 1; index <= last; index++) {
+		if (*(temp->info) < pivot) {
+			smallIndex++;
+			swapAt(smallIndex, index);
+		}
+		temp = temp->link;
+	}
+	swapAt(first, smallIndex);
+
+	//std::cout << "part sIndex: " << smallIndex<< std::endl;
+	return smallIndex;
+}
+
+template <class elemType>
+void linkedListSort<elemType>::recQuickSort(int first, int last)
+{
+	int pivotLocation;
+	//std::cout << "first: " << first << " last: " << last << std::endl;
+	if (first < last)
+	{
+		pivotLocation = partition(first, last);
+		//std::cout << "pivot: " << pivotLocation << std::endl;
+		recQuickSort(first, pivotLocation - 1);
+		recQuickSort(pivotLocation + 1, last);
+	}
+}
+
+template <class elemType>
+void linkedListSort<elemType>::quickSort()
+{
+	recQuickSort(0, length - 1);
+}
+
+template <class elemType>
+void linkedListSort<elemType>::divideList(nodeT<elemType>* first1,
+	nodeT<elemType>* &first2) {
+	nodeT<elemType>* middle;
+	nodeT<elemType>* current;
+	if (first1 == NULL) //list is empty
+		first2 = NULL;
+	else if (first1->link == NULL) //list has only one node
+		first2 = NULL;
+	else
+	{
+		middle = first1;
+		current = first1->link;
+		if (current != NULL) //list has more than two nodes
+			current = current->link;
+		while (current != NULL)
+		{
+			middle = middle->link;
+			current = current->link;
+			if (current != NULL)
+				current = current->link;
+		} //end while
+		first2 = middle->link; //first2 points to the first
+							   //node of the second sublist
+		middle->link = NULL; //set the link of the last node
+							 //of the first sublist to NULL
+	} //end else
+}
+
+template <class elemType>
+nodeT<elemType>* linkedListSort<elemType>::
+mergeList(nodeT<elemType>* first1,
+	nodeT<elemType>* first2)
+{
+	nodeT<elemType> *lastSmall; //pointer to the last node of
+							   //the merged list
+	nodeT<elemType> *newHead; //pointer to the merged list
+	if (first1 == NULL) //the first sublist is empty
+		return first2;
+	else if (first2 == NULL) //the second sublist is empty
+		return first1;
+	else
+	{
+		if (first1->info < first2->info) //compare the first nodes
+		{
+			newHead = first1;
+			first1 = first1->link;
+			lastSmall = newHead;
+		}
+		else
+		{
+			newHead = first2;
+			first2 = first2->link;
+			lastSmall = newHead;
+		}
+		while (first1 != NULL && first2 != NULL)
+		{
+			if (first1->info < first2->info)
+			{
+				lastSmall->link = first1;
+				lastSmall = lastSmall->link;
+				first1 = first1->link;
+			}
+			else
+			{
+				lastSmall->link = first2;
+				lastSmall = lastSmall->link;
+				first2 = first2->link;
+			}
+		} //end while
+		if (first1 == NULL) //first sublist is exhausted first
+			lastSmall->link = first2;
+		else //second sublist is exhausted first
+			lastSmall->link = first1;
+		return newHead;
+	}
+}//end mergeList
+
+template <class elemType>
+void linkedListSort<elemType>::recMergeSort(nodeT<elemType>* &head)
+{
+	nodeT<elemType> *otherHead;
+	if (head != NULL) //if the list is not empty
+		if (head->link != NULL) //if the list has more than one node
+		{
+			divideList(head, otherHead);
+			recMergeSort(head);
+			recMergeSort(otherHead);
+			head = mergeList(head, otherHead);
+		}
+} //end recMergeSort
+
+template<class elemType>
+void linkedListSort<elemType>::mergeSort()
+{
+	nodeT<elemType>* first = beginningNode;
+	nodeT<elemType>* last = lastNode;
+	recMergeSort(first);
+	if (first == NULL)
+		last = NULL;
+	else
+	{
+		last = first;
+		while (last->link != NULL)
+			last = last->link;
+	}
+} //end mergeSort
 
 #endif

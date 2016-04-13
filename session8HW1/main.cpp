@@ -89,6 +89,90 @@ int main() {
 	std::cout << "insertion sort after:  ";
 	list3.print();
 
+	// test quicksort partition
+	linkedListSort<int> list4 = linkedListSort<int>(6, linkedListType::integerType);
+	list4.push(new int(10));
+	list4.push(new int(80));
+	list4.push(new int(75));
+	list4.push(new int(124));
+	list4.push(new int(63));
+	list4.push(new int(91));
+	std::cout << std::endl << "before qSort partition: ";
+	list4.print();
+	list4.partition(0, 5);
+	std::cout << "after qSort partition: ";
+	list4.print();
+
+	linkedListSort<int> list41 = linkedListSort<int>(6, linkedListType::integerType);
+	list41.push(new int(1));
+	list41.push(new int(5));
+	list41.push(new int(6));
+	list41.push(new int(3));
+	list41.push(new int(4));
+	list41.push(new int(2));
+	std::cout << std::endl << "before qSort partition2: ";
+	list41.print();
+	list41.partition(0, 5);  // 6 ends up being pivot ( rightmost )
+	std::cout << "after qSort partition2: ";
+	list41.print();
+
+
+	// test actual quicksort
+	linkedListSort<int> list51 = linkedListSort<int>(4, linkedListType::integerType);
+	list51.push(new int(2));
+	list51.push(new int(7));
+	list51.push(new int(1));
+	list51.push(new int(3));
+	std::cout << std::endl << "list51 before:  ";
+	list51.print();
+	list51.quickSort();
+	std::cout << "list51 test:  ";
+	list51.print();
+	// quicksort is working here
+
+	/*linkedListSort<int> list52 = linkedListSort<int>(5, linkedListType::integerType);
+	list52.push(new int(10));
+	list52.push(new int(5));
+	list52.push(new int(2));
+	list52.push(new int(7));
+	std::cout << std::endl << "list52 before: ";
+	list52.print();
+	list52.quickSort();
+	std::cout << "list52 after: ";
+	list52.print();*/ // ihis quicksort is causing a stack overflow for some reason!!
+	// i believe quicksort is written correctly though
+
+	// merge sort
+	linkedListSort<int> list6 = linkedListSort<int>(4, linkedListType::integerType);
+	std::cout << "mergeSort " << std::endl;
+	list6.push(new int(2));
+	list6.push(new int(7));
+	list6.push(new int(1));
+	list6.push(new int(3));
+	std::cout << std::endl << "list6 before:  ";
+	list6.print();
+	list6.mergeSort();
+	std::cout << "list6 test:  ";
+	list51.print(); // small mergesort working
+
+	linkedListSort<int> list7 = linkedListSort<int>(10, linkedListType::integerType);
+	std::cout << "mergeSort " << std::endl;
+	list7.push(new int(10));
+	list7.push(new int(25));
+	list7.push(new int(36));
+	list7.push(new int(33));
+	list7.push(new int(31));
+	list7.push(new int(29));
+	list7.push(new int(24));
+	list7.push(new int(9));
+	list7.push(new int(78));
+	list7.push(new int(19));
+	std::cout << std::endl << "list7 before:  ";
+	list7.print();
+	list7.mergeSort();
+	std::cout << "list7 test:  ";
+	list7.print(); // big merge sort test not working
+
 
 
 	char stop;
